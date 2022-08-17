@@ -5,21 +5,26 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import javax.servlet.*;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 
-import static org.mockito.Mockito.*;
-
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class RecentProductsServletTest {
 
-    private final String path = "/WEB-INF/pages/productList.jsp";
+    RecentProductsServlet servlet = new RecentProductsServlet();
 
-    private ProductListPageServlet servlet = new ProductListPageServlet();
+    private final String path = "/WEB-INF/pages/recentProducts.jsp";
 
     @Mock
     private HttpServletRequest request;
@@ -33,9 +38,6 @@ public class ProductListPageServletTest {
     @Mock
     private ServletConfig config;
 
-    @Mock
-    private HttpSession session;
-
     @Before
     public void setUp() throws Exception {
         servlet.init(config);
@@ -44,11 +46,8 @@ public class ProductListPageServletTest {
     @Test
     public void testDoGet() throws ServletException, IOException {
         when(request.getRequestDispatcher(path)).thenReturn(dispatcher);
-        when(request.getSession()).thenReturn(session);
         servlet.doGet(request, response);
+        verify(request).setAttribute(eq("recentProducts"), any());
         verify(dispatcher).forward(request, response);
-        verify(request).setAttribute(eq("query"), any());
-        verify(request).setAttribute(eq("cartByIdAndQuantity"), any());
-        verify(request).setAttribute(eq("products"), any());
     }
 }

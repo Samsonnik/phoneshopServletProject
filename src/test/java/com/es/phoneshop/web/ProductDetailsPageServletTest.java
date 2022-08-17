@@ -5,36 +5,36 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import javax.servlet.*;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static org.mockito.Mockito.*;
-
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class ProductDetailsPageServletTest {
 
-    private final String path = "/WEB-INF/pages/productList.jsp";
-
-    private ProductListPageServlet servlet = new ProductListPageServlet();
-
-    @Mock
-    private HttpServletRequest request;
-
-    @Mock
-    private HttpServletResponse response;
-
-    @Mock
-    private RequestDispatcher dispatcher;
+    private ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
+    private final String path = "/WEB-INF/pages/product.jsp";
 
     @Mock
     private ServletConfig config;
 
     @Mock
-    private HttpSession session;
+    private HttpServletResponse response;
+
+    @Mock
+    private HttpServletRequest request;
+
+    @Mock
+    private RequestDispatcher dispatcher;
 
     @Before
     public void setUp() throws Exception {
@@ -43,12 +43,9 @@ public class ProductListPageServletTest {
 
     @Test
     public void testDoGet() throws ServletException, IOException {
+        when(request.getPathInfo()).thenReturn("/1");
         when(request.getRequestDispatcher(path)).thenReturn(dispatcher);
-        when(request.getSession()).thenReturn(session);
         servlet.doGet(request, response);
         verify(dispatcher).forward(request, response);
-        verify(request).setAttribute(eq("query"), any());
-        verify(request).setAttribute(eq("cartByIdAndQuantity"), any());
-        verify(request).setAttribute(eq("products"), any());
     }
 }
